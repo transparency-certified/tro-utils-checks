@@ -4,9 +4,9 @@ This report was written by `tro-checks`, which checks a TRO declaration against 
 
 Made by `tro-utils` with `readme-trs-declaration.jsonld` representing a TRS that can record internet access and provide internet isolation and is accompanied by a signing key pair, `trs-key.asc`, whose public key the TRS carries. Signed with that key pair. Describes three performances: a download of a data file, an analysis of it, and a packaging of the scripts and results; and four arrangements. The download claims its internet access was recorded; the analysis and the packaging claim they were isolated from the internet.
 
-This candidate is expected to satisfy [`Tier 6 - STANDALONE-TRO`](#tier-6-standalone-tro) at version `trace-main`. The candidate does not meet five of the expectations: three in [`Tier 4 - USES-TROV-CORRECTLY`](#tier-4-uses-trov-correctly), one in [`Tier 5 - DEFINES-TRS`](#tier-5-defines-trs) and one in [`Tier 6 - STANDALONE-TRO`](#tier-6-standalone-tro).
+This candidate is expected to satisfy [`Tier 6 - STANDALONE-TRO`](#tier-6-standalone-tro) at version `trace-main`. The candidate meets every expectation in that tier and in the five tiers below it.
 
-The sections below give the status of each tier, then the status of each expectation, then, for each expectation not met, what was found, where in the candidate, and why it does not meet the expectation.
+The sections below give the status of each tier, then the status of each expectation.
 
 ## Candidate Information
 
@@ -16,7 +16,7 @@ The sections below give the status of each tier, then the status of each expecta
 </thead>
 <tbody>
 <tr><td>Candidate</td><td nowrap><samp>03-readme-trs-declaration-signed.jsonld</samp></td><td></td></tr>
-<tr><td>Created&nbsp;with</td><td><code>tro-utils 0.4.6</code></td><td>the candidate</td></tr>
+<tr><td>Created&nbsp;with</td><td><code>tro-utils 0.2.3.dev4+gd511bf49a.d20260326</code></td><td>the candidate</td></tr>
 <tr><td>Description</td><td>Made by <code>tro-utils</code> with <code>readme-trs-declaration.jsonld</code> representing a TRS that can record internet access and provide internet isolation and is accompanied by a signing key pair, <code>trs-key.asc</code>, whose public key the TRS carries. Signed with that key pair. Describes three performances: a download of a data file, an analysis of it, and a packaging of the scripts and results; and four arrangements. The download claims its internet access was recorded; the analysis and the packaging claim they were isolated from the internet.</td><td>the candidate manifest</td></tr>
 <tr><td>Target&nbsp;version</td><td><samp>trace&#8209;main</samp></td><td>the candidate manifest</td></tr>
 <tr><td>Target&nbsp;tier</td><td><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp></td><td>the candidate manifest</td></tr>
@@ -33,9 +33,9 @@ The sections below give the status of each tier, then the status of each expecta
 <tr><td><a href="#tier-1-safe-json"><samp>Tier&nbsp;1&nbsp;&#8209;&nbsp;SAFE&#8209;JSON</samp></a></td><td>JSON that every supported parser reads the same way</td><td>✅&nbsp;met</td></tr>
 <tr><td><a href="#tier-2-safe-json-ld"><samp>Tier&nbsp;2&nbsp;&#8209;&nbsp;SAFE&#8209;JSON&#8209;LD</samp></a></td><td>JSON-LD that uses only those constructs our supported JSON-LD processors handle consistently, and whose interpretation depends on nothing outside the file</td><td>✅&nbsp;met</td></tr>
 <tr><td><a href="#tier-3-trace-permissible-json-ld"><samp>Tier&nbsp;3&nbsp;&#8209;&nbsp;TRACE&#8209;PERMISSIBLE&#8209;JSON&#8209;LD</samp></a></td><td>JSON-LD that avoids constructs and practices TRACE disallows</td><td>✅&nbsp;met</td></tr>
-<tr><td><a href="#tier-4-uses-trov-correctly"><samp>Tier&nbsp;4&nbsp;&#8209;&nbsp;USES&#8209;TROV&#8209;CORRECTLY</samp></a></td><td>JSON-LD that uses TROV terms only in ways TRACE allows</td><td>❌&nbsp;not&nbsp;met</td></tr>
-<tr><td><a href="#tier-5-defines-trs"><samp>Tier&nbsp;5&nbsp;&#8209;&nbsp;DEFINES&#8209;TRS</samp></a></td><td>JSON-LD that defines a Trusted Research System, identified by an absolute IRI</td><td>❌&nbsp;not&nbsp;met</td></tr>
-<tr><td><a href="#tier-6-standalone-tro"><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp></a></td><td>A TRO declaration with the structure the TRACE Specification requires, whose references resolve within it</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td><a href="#tier-4-uses-trov-correctly"><samp>Tier&nbsp;4&nbsp;&#8209;&nbsp;USES&#8209;TROV&#8209;CORRECTLY</samp></a></td><td>JSON-LD that uses TROV terms only in ways TRACE allows</td><td>✅&nbsp;met</td></tr>
+<tr><td><a href="#tier-5-defines-trs"><samp>Tier&nbsp;5&nbsp;&#8209;&nbsp;DEFINES&#8209;TRS</samp></a></td><td>JSON-LD that defines a Trusted Research System, identified by an absolute IRI</td><td>✅&nbsp;met</td></tr>
+<tr><td><a href="#tier-6-standalone-tro"><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp></a></td><td>A TRO declaration with the structure the TRACE Specification requires, whose references resolve within it</td><td>✅&nbsp;met</td></tr>
 <tr style="color: var(--vscode-descriptionForeground, #767676)"><td><em><a href="#tier-7-linkable-tro"><samp>Tier&nbsp;7&nbsp;&#8209;&nbsp;LINKABLE&#8209;TRO</samp></a></em></td><td><em>A TRO declaration whose element identifiers cannot collide with those in another TRO</em></td><td><em>not&nbsp;claimed</em></td></tr>
 </tbody>
 </table>
@@ -85,19 +85,19 @@ The sections below give the status of each tier, then the status of each expecta
 <tr><td nowrap><samp>types-prefixed-or-absolute</samp></td><td>Every <code>@type</code> value is a prefixed or absolute IRI</td><td>✅&nbsp;met</td></tr>
 </tbody>
 <tbody>
-<tr><th colspan="3" align="left"><br><a id="tier-4-uses-trov-correctly"></a><samp>Tier&nbsp;4&nbsp;&#8209;&nbsp;USES&#8209;TROV&#8209;CORRECTLY</samp>&nbsp;&nbsp;❌&nbsp;not&nbsp;met</th></tr>
+<tr><th colspan="3" align="left"><br><a id="tier-4-uses-trov-correctly"></a><samp>Tier&nbsp;4&nbsp;&#8209;&nbsp;USES&#8209;TROV&#8209;CORRECTLY</samp>&nbsp;&nbsp;✅&nbsp;met</th></tr>
 <tr><th align="left">Expectation</th><th align="left">Summary</th><th align="left">Status</th></tr>
 <tr><td nowrap><samp>context-and-nonempty-graph-present</samp></td><td>The file has a non-null <code>@context</code> and an <code>@graph</code> holding at least one node</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>core-prefixes-pinned</samp></td><td><code>trov</code> is declared and is the only prefix for a TROV namespace; <code>rdf</code>, <code>rdfs</code> and <code>schema</code> prefixes, if declared, are the standard ones</td><td>✅&nbsp;met</td></tr>
-<tr><td nowrap><a href="#unmet-expectation-trov-terms-known"><samp>trov-terms-known</samp></a></td><td>Every term with the <code>trov:</code> prefix is one TROV defines</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td nowrap><samp>trov-terms-known</samp></td><td>Every term with the <code>trov:</code> prefix is one TROV defines</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>trov-version-known</samp></td><td>The TRO declares, in <code>trov:vocabularyVersion</code>, a known version of TROV</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>hash-algorithms-permitted</samp></td><td>Every hash names an algorithm TRACE permits: a collision-resistant digest from the SHA-2, SHA-3 or BLAKE families</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>hash-values-correct-form</samp></td><td>Every hash value is lowercase hexadecimal of the length its algorithm produces</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>mime-types-two-part</samp></td><td>Every artifact's <code>trov:mimeType</code> is a string of the form <code>type/subtype</code></td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>times-iso-8601</samp></td><td>Every <code>trov:startedAtTime</code> and <code>trov:endedAtTime</code> is an ISO 8601 date-time; the TRO's <code>schema:dateCreated</code>, if present, an ISO 8601 date or date-time</td><td>✅&nbsp;met</td></tr>
-<tr><td nowrap><a href="#unmet-expectation-times-zoned"><samp>times-zoned</samp></a></td><td>Every <code>trov:startedAtTime</code> and <code>trov:endedAtTime</code> carries its time zone</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td nowrap><samp>times-zoned</samp></td><td>Every <code>trov:startedAtTime</code> and <code>trov:endedAtTime</code> carries its time zone</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>tro-name-description-text</samp></td><td>The TRO's <code>schema:name</code> and <code>schema:description</code>, if present, are Text: a string or an array of strings</td><td>✅&nbsp;met</td></tr>
-<tr><td nowrap><a href="#unmet-expectation-creators-person-or-organization"><samp>creators-person-or-organization</samp></a></td><td>The TRO's <code>schema:creator</code>, if present, is a node typed <code>schema:Person</code> or <code>schema:Organization</code>, never a string</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td nowrap><samp>creators-person-or-organization</samp></td><td>The TRO's <code>schema:creator</code>, if present, is a node typed <code>schema:Person</code> or <code>schema:Organization</code>, never a string</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>trov-capabilities-predefined</samp></td><td>A capability's <code>trov:</code> type is one TROV predefines</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>trov-performance-attributes-predefined</samp></td><td>A performance attribute's <code>trov:</code> type is one TROV predefines</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>trov-tro-attributes-predefined</samp></td><td>A TRO attribute's <code>trov:</code> type is one TROV predefines</td><td>✅&nbsp;met</td></tr>
@@ -106,18 +106,18 @@ The sections below give the status of each tier, then the status of each expecta
 <tr><td nowrap><samp>trov-signing-mechanisms-predefined</samp></td><td>A signing mechanism is identified by reference, and a <code>trov:</code> one is one TROV predefines</td><td>✅&nbsp;met</td></tr>
 </tbody>
 <tbody>
-<tr><th colspan="3" align="left"><br><a id="tier-5-defines-trs"></a><samp>Tier&nbsp;5&nbsp;&#8209;&nbsp;DEFINES&#8209;TRS</samp>&nbsp;&nbsp;❌&nbsp;not&nbsp;met</th></tr>
+<tr><th colspan="3" align="left"><br><a id="tier-5-defines-trs"></a><samp>Tier&nbsp;5&nbsp;&#8209;&nbsp;DEFINES&#8209;TRS</samp>&nbsp;&nbsp;✅&nbsp;met</th></tr>
 <tr><th align="left">Expectation</th><th align="left">Summary</th><th align="left">Status</th></tr>
 <tr><td nowrap><samp>trs-defined</samp></td><td>A TRS is defined, with an <code>@id</code>, at the top of the <code>@graph</code> or as the object of <code>trov:wasAssembledBy</code>, and nowhere else</td><td>✅&nbsp;met</td></tr>
-<tr><td nowrap><a href="#unmet-expectation-trs-id-absolute"><samp>trs-id-absolute</samp></a></td><td>The TRS is identified by an absolute IRI, or a compact IRI outside the <code>trov</code> namespace</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td nowrap><samp>trs-id-absolute</samp></td><td>The TRS is identified by an absolute IRI, or a compact IRI outside the <code>trov</code> namespace</td><td>✅&nbsp;met</td></tr>
 </tbody>
 <tbody>
-<tr><th colspan="3" align="left"><br><a id="tier-6-standalone-tro"></a><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp>&nbsp;&nbsp;❌&nbsp;not&nbsp;met</th></tr>
+<tr><th colspan="3" align="left"><br><a id="tier-6-standalone-tro"></a><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp>&nbsp;&nbsp;✅&nbsp;met</th></tr>
 <tr><th align="left">Expectation</th><th align="left">Summary</th><th align="left">Status</th></tr>
 <tr><td nowrap><samp>tro-top-level-in-graph</samp></td><td>The TRO is a top-level member of the <code>@graph</code></td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>trov-objects-identified</samp></td><td>Every object typed with a TROV class carries an <code>@id</code></td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>tro-assembled-by-trs</samp></td><td>The TRO names its assembling system, typed as a TRS</td><td>✅&nbsp;met</td></tr>
-<tr><td nowrap><a href="#unmet-expectation-performance-attribute-warrants-absolute"><samp>performance-attribute-warrants-absolute</samp></a></td><td>Every performance attribute refers to the capability warranting it by a compact or absolute IRI</td><td>❌&nbsp;not&nbsp;met</td></tr>
+<tr><td nowrap><samp>performance-attribute-warrants-absolute</samp></td><td>Every performance attribute refers to the capability warranting it by a compact or absolute IRI</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>tro-composition-single</samp></td><td>A <code>trov:hasComposition</code> is one object, not an array</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>composition-has-fingerprint</samp></td><td>The TRO's composition, if any, carries one fingerprint, which carries one hash</td><td>✅&nbsp;met</td></tr>
 <tr><td nowrap><samp>composition-identifies-artifacts</samp></td><td>The TRO's composition, if any, names at least one artifact in a <code>trov:hasArtifact</code> array</td><td>✅&nbsp;met</td></tr>
@@ -134,176 +134,5 @@ The sections below give the status of each tier, then the status of each expecta
 <tr style="color: var(--vscode-descriptionForeground, #767676)"><td nowrap><em><samp>base-host-ownable</samp></em></td><td><em>The <code>@base</code> host is a domain name the minter could hold, not a reserved or documentation name</em></td><td><em>not&nbsp;claimed</em></td></tr>
 <tr style="color: var(--vscode-descriptionForeground, #767676)"><td nowrap><em><samp>node-ids-present</samp></em></td><td><em>Every node carries an explicit <code>@id</code></em></td><td><em>not&nbsp;claimed</em></td></tr>
 <tr style="color: var(--vscode-descriptionForeground, #767676)"><td nowrap><em><samp>blank-node-ids-absent</samp></em></td><td><em>No <code>@id</code> is a blank node identifier</em></td><td><em>not&nbsp;claimed</em></td></tr>
-</tbody>
-</table>
-
-<a id="diagnostics"></a>
-
-## Diagnostics for the 5 Unmet Expectations
-
-<a id="unmet-expectation-trov-terms-known"></a>
-
-### Unmet expectation: trov-terms-known
-
-Detailed expectation: Where a property name or a string value carries the trov: prefix, it is a term TROV defines.
-
-Defined in version: `trace-main`
-
-Expectation unmet in 5 places:
-
-<table>
-<tbody>
-<tr><th align="left">Rule</th><td>a term with the trov: prefix is one TROV defines</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:contact</code> is not one of the 74 allowed values</td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>trov:contact</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a term with the trov: prefix is one TROV defines</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:description</code> is not one of the 74 allowed values</td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>trov:description</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a term with the trov: prefix is one TROV defines</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:name</code> is not one of the 74 allowed values</td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>trov:name</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a term with the trov: prefix is one TROV defines</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:owner</code> is not one of the 74 allowed values</td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>trov:owner</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a term with the trov: prefix is one TROV defines</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:url</code> is not one of the 74 allowed values</td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>trov:url</samp></td></tr>
-</tbody>
-</table>
-
-<a id="unmet-expectation-times-zoned"></a>
-
-### Unmet expectation: times-zoned
-
-Detailed expectation: Every trov:startedAtTime and trov:endedAtTime carries its time zone: Z, or an offset of the form +hh:mm or -hh:mm.
-
-Defined in version: `trace-main`
-
-Expectation unmet in 6 places:
-
-<table>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:endedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T09:05:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>0/<wbr>trov:endedAtTime</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:startedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T09:00:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>0/<wbr>trov:startedAtTime</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:endedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T10:00:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>1/<wbr>trov:endedAtTime</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:startedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T09:10:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>1/<wbr>trov:startedAtTime</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:endedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T10:06:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>2/<wbr>trov:endedAtTime</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a time carries its zone: Z, or an offset +hh:mm or -hh:mm</td></tr>
-<tr><th align="left">Problem</th><td><code>trov:startedAtTime</code> was expected to match pattern <code>(Z|[+-][0-9]{2}:[0-9]{2})$</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"2026-10-03T10:05:00"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>2/<wbr>trov:startedAtTime</samp></td></tr>
-</tbody>
-</table>
-
-<a id="unmet-expectation-creators-person-or-organization"></a>
-
-### Unmet expectation: creators-person-or-organization
-
-Detailed expectation: Where the TRO carries schema:creator, each value is a node -- an object, not a string -- and where the node carries a @type, it is schema:Person or schema:Organization, the types schema.org expects of a creator. A bare reference, an object holding only an @id, passes.
-
-Defined in version: `trace-main`
-
-Expectation unmet in 1 place:
-
-<table>
-<tbody>
-<tr><th align="left">Rule</th><td>schema:creator is a Person or an Organization, given as a node, not as a string</td></tr>
-<tr><th align="left">Problem</th><td><code>schema:creator</code> was expected to be of type object</td></tr>
-<tr><th align="left">Found</th><td><code>"TRO utils"</code></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>schema:creator</samp></td></tr>
-</tbody>
-</table>
-
-<a id="unmet-expectation-trs-id-absolute"></a>
-
-### Unmet expectation: trs-id-absolute
-
-Detailed expectation: The @id of the TRS the document defines is an absolute IRI, or a compact IRI whose prefix is not trov, so that it is the same wherever the TRS is defined.
-
-Defined in version: `trace-main`
-
-Expectation unmet in 1 place:
-
-<table>
-<tbody>
-<tr><th align="left">Rule</th><td>a TRS is identified by an absolute IRI, or by a compact IRI outside the trov namespace</td></tr>
-<tr><th align="left">Problem</th><td>the <code>@id</code> of <code>trov:wasAssembledBy</code> was expected to match pattern <code>^(?!trov:)(?!_:)[A-Za-z][A-Za-z0-9+.-]*:</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"trs"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:wasAssembledBy/<wbr>@id</samp></td></tr>
-</tbody>
-</table>
-
-<a id="unmet-expectation-performance-attribute-warrants-absolute"></a>
-
-### Unmet expectation: performance-attribute-warrants-absolute
-
-Detailed expectation: Every trov:warrantedBy on a value of trov:hasPerformanceAttribute refers to its capability by a compact or absolute IRI, such as the capability term itself.
-
-Defined in version: `trace-main`
-
-Expectation unmet in 3 places:
-
-<table>
-<tbody>
-<tr><th align="left">Rule</th><td>a performance attribute's warrant refers to its capability by a compact or absolute IRI, not by a relative id</td></tr>
-<tr><th align="left">Problem</th><td>the <code>@id</code> of <code>trov:warrantedBy</code> was expected to match pattern <code>^(?!_:)[A-Za-z][A-Za-z0-9+.-]*:</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"trs/capability/1"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>0/<wbr>trov:hasPerformanceAttribute/<wbr>0/<wbr>trov:warrantedBy/<wbr>@id</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a performance attribute's warrant refers to its capability by a compact or absolute IRI, not by a relative id</td></tr>
-<tr><th align="left">Problem</th><td>the <code>@id</code> of <code>trov:warrantedBy</code> was expected to match pattern <code>^(?!_:)[A-Za-z][A-Za-z0-9+.-]*:</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"trs/capability/2"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>1/<wbr>trov:hasPerformanceAttribute/<wbr>0/<wbr>trov:warrantedBy/<wbr>@id</samp></td></tr>
-</tbody>
-<tbody><tr><td colspan="2">&nbsp;</td></tr></tbody>
-<tbody>
-<tr><th align="left">Rule</th><td>a performance attribute's warrant refers to its capability by a compact or absolute IRI, not by a relative id</td></tr>
-<tr><th align="left">Problem</th><td>the <code>@id</code> of <code>trov:warrantedBy</code> was expected to match pattern <code>^(?!_:)[A-Za-z][A-Za-z0-9+.-]*:</code></td></tr>
-<tr><th align="left">Found</th><td nowrap><samp>"trs/capability/2"</samp></td></tr>
-<tr><th align="left">Where</th><td><samp>/<wbr>@graph/<wbr>0/<wbr>trov:hasPerformance/<wbr>2/<wbr>trov:hasPerformanceAttribute/<wbr>0/<wbr>trov:warrantedBy/<wbr>@id</samp></td></tr>
 </tbody>
 </table>

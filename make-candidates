@@ -5,8 +5,11 @@
 # ---- Setup -------------------------------------------------------------------
 
 # Fake a fixed time for every command, so that the timestamps in the TRO declarations
-# are always the same.
-export FAKETIME="2026-10-03 12:00:00"
+# are always the same. tro-utils writes them with an offset from UTC as of 0.5.0, and takes
+# that offset from the zone the machine is set to, so the zone is fixed here too: without it
+# the same commands yield a different declaration on a machine set to another zone.
+export FAKETIME="2026-10-07 12:00:00"
+export TZ=UTC
 export LD_PRELOAD=$(echo /usr/lib/*/faketime/libfaketime.so.1)
 
 # A candidate is built up by successive tro-utils commands on one file, so start

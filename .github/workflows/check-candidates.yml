@@ -18,9 +18,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
-          # The Dockerfile is compared with the commit before the push.
+          # The Dockerfile is compared with the base the change is measured against.
           fetch-depth: 0
 
       # The image runs as a user that cannot otherwise write to the runner's checkout, including the
@@ -33,12 +33,21 @@ jobs:
       - name: Log in to ghcr.io
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-      # Build the image where this push changed the Dockerfile; otherwise use the published one.
+      # Build the image where the change touches the Dockerfile; otherwise use the published one.
+      # The base to compare against differs by event: a pull_request carries no github.event.before,
+      # and the push that creates a branch reports the null SHA, so neither stands on its own and
+      # both fall back to the default branch.
       - name: Get the image
         run: |
-          before="${{ github.event.before }}"
-          if [ -n "$before" ] && git cat-file -e "$before" 2>/dev/null \
-              && ! git diff --quiet "$before" "${{ github.sha }}" -- Dockerfile; then
+          base="${{ github.event.pull_request.base.sha }}"
+          [ -n "$base" ] || base="${{ github.event.before }}"
+          case "$base" in
+            '' | 0000000000000000000000000000000000000000)
+              base="origin/${{ github.event.repository.default_branch }}" ;;
+          esac
+
+          if git cat-file -e "$base" 2>/dev/null \
+              && ! git diff --quiet "$base" "${{ github.sha }}" -- Dockerfile; then
             make build-image
           else
             make pull-image
@@ -65,7 +74,7 @@ jobs:
 
       - name: Attach the reports
         if: always() && steps.check.outcome != 'skipped'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: reports/

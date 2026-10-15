@@ -1,18 +1,23 @@
 {
-  "rdfs:comment": "TRS that can monitor network accesses or provide Internet isolation",
+  "@id": "http://127.0.0.1/",
+  "rdfs:comment": "TRS that can monitor netowork accesses or provide Internet isolation",
   "trov:hasCapability": [
     {
-      "@id": "trs/capability/1",
+      "@id": "trov:CanRecordInternetAccess",
       "@type": "trov:CanRecordInternetAccess"
     },
     {
-      "@id": "trs/capability/2",
+      "@id": "trov:CanProvideInternetIsolation",
       "@type": "trov:CanProvideInternetIsolation"
     }
   ],
-  "trov:owner": "Kacper Kowalik",
-  "trov:description": "My local system",
-  "trov:contact": "root@dev.null",
-  "trov:url": "http://127.0.0.1/",
-  "trov:name": "shakuras"
+  "schema:owner": {
+      "@id": "https://orcid.org/0000-0003-1709-3744",
+      "@type": "schema:Person",
+      "schema:name": "Kacper Kowalik"
+  },
+  "schema:description": "My local system",
+  "schema:email": "root@dev.null",
+  "schema:url": "http://127.0.0.1/",
+  "schema:name": "shakuras"
 }

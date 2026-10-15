@@ -9,7 +9,7 @@ RUN apt-get update && \
 	apt-get install -y python3 python3-pip libmagic1 gnupg faketime xz-utils
 
 # Install a pinned version of tro-utils so candidates change when the pin is moved.
-RUN pip3 install tro-utils==0.4.6
+RUN pip3 install tro-utils==0.5.1
 
 # Install Node for running tro-checks.
 ENV NODE_VERSION=22.11.0

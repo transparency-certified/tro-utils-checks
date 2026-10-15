@@ -16,7 +16,7 @@ The sections below give the status of each tier, then the status of each expecta
 </thead>
 <tbody>
 <tr><td>Candidate</td><td nowrap><samp>01-builtin-trs-declaration.jsonld</samp></td><td></td></tr>
-<tr><td>Created&nbsp;with</td><td><code>tro-utils 0.4.6</code></td><td>the candidate</td></tr>
+<tr><td>Created&nbsp;with</td><td><code>tro-utils 0.2.3.dev4+gd511bf49a.d20260326</code></td><td>the candidate</td></tr>
 <tr><td>Description</td><td>Made by <code>tro-utils</code> with no TRS declaration given, so it uses the minimal TRS declaration built into <code>tro-utils</code>, which has no capabilities and no public key. Describes one performance: an analysis of a data file; and two arrangements. Claims no attributes.</td><td>the candidate manifest</td></tr>
 <tr><td>Target&nbsp;version</td><td><samp>trace&#8209;2026&#8209;04&#8209;19</samp></td><td>the candidate manifest</td></tr>
 <tr><td>Target&nbsp;tier</td><td><samp>Tier&nbsp;6&nbsp;&#8209;&nbsp;STANDALONE&#8209;TRO</samp></td><td>the candidate manifest</td></tr>

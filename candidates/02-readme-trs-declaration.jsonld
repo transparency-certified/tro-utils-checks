@@ -12,14 +12,18 @@
         "trov:TransparentResearchObject",
         "schema:CreativeWork"
       ],
-      "schema:creator": "TRO utils",
-      "schema:dateCreated": "2026-10-03T12:00:00",
+      "schema:creator": {
+        "@id": "http://127.0.0.1/",
+        "@type": "schema:Organization",
+        "schema:name": "shakuras"
+      },
+      "schema:dateCreated": "2026-10-07T12:00:00+00:00",
       "schema:description": "Some description",
       "schema:name": "Some TRO",
       "trov:createdWith": {
         "@type": "schema:SoftwareApplication",
         "schema:name": "tro-utils",
-        "schema:softwareVersion": "0.4.6"
+        "schema:softwareVersion": "0.2.3.dev4+gd511bf49a.d20260326"
       },
       "trov:hasArrangement": [
         {
@@ -70,25 +74,25 @@
               "@id": "arrangement/1/location/1",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/1"
+                "@id": "composition/1/artifact/3"
               },
-              "trov:path": "download.sh"
+              "trov:path": "data.csv"
             },
             {
               "@id": "arrangement/1/location/2",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/2"
+                "@id": "composition/1/artifact/1"
               },
-              "trov:path": "package.sh"
+              "trov:path": "download.sh"
             },
             {
               "@id": "arrangement/1/location/3",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/3"
+                "@id": "composition/1/artifact/2"
               },
-              "trov:path": "data.csv"
+              "trov:path": "package.sh"
             }
           ]
         },
@@ -109,9 +113,9 @@
               "@id": "arrangement/2/location/1",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/4"
+                "@id": "composition/1/artifact/3"
               },
-              "trov:path": "results.txt"
+              "trov:path": "data.csv"
             },
             {
               "@id": "arrangement/2/location/2",
@@ -133,9 +137,9 @@
               "@id": "arrangement/2/location/4",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/3"
+                "@id": "composition/1/artifact/4"
               },
-              "trov:path": "data.csv"
+              "trov:path": "results.txt"
             }
           ]
         }
@@ -179,7 +183,7 @@
               "trov:hashAlgorithm": "sha256",
               "trov:hashValue": "492d5ea496056f1a6a6592241032fab764c321596317930b4fa0e1e8bc3b7470"
             },
-            "trov:mimeType": "text/plain"
+            "trov:mimeType": "text/csv"
           },
           {
             "@id": "composition/1/artifact/4",
@@ -219,19 +223,19 @@
               "@id": "arrangement/1"
             }
           },
-          "trov:endedAtTime": "2026-10-03T09:05:00",
+          "trov:endedAtTime": "2026-10-03T09:05:00+00:00",
           "trov:hasPerformanceAttribute": [
             {
               "@id": "trp/0/attribute/0",
               "@type": "trov:InternetAccessRecording",
               "trov:warrantedBy": {
-                "@id": "trs/capability/1"
+                "@id": "trov:CanRecordInternetAccess"
               }
             }
           ],
-          "trov:startedAtTime": "2026-10-03T09:00:00",
+          "trov:startedAtTime": "2026-10-03T09:00:00+00:00",
           "trov:wasConductedBy": {
-            "@id": "trs"
+            "@id": "http://127.0.0.1/"
           }
         },
         {
@@ -252,45 +256,49 @@
               "@id": "arrangement/2"
             }
           },
-          "trov:endedAtTime": "2026-10-03T10:00:00",
+          "trov:endedAtTime": "2026-10-03T10:00:00+00:00",
           "trov:hasPerformanceAttribute": [
             {
               "@id": "trp/1/attribute/0",
               "@type": "trov:InternetIsolation",
               "trov:warrantedBy": {
-                "@id": "trs/capability/2"
+                "@id": "trov:CanProvideInternetIsolation"
               }
             }
           ],
-          "trov:startedAtTime": "2026-10-03T09:10:00",
+          "trov:startedAtTime": "2026-10-03T09:10:00+00:00",
           "trov:wasConductedBy": {
-            "@id": "trs"
+            "@id": "http://127.0.0.1/"
           }
         }
       ],
       "trov:vocabularyVersion": "0.1",
       "trov:wasAssembledBy": {
-        "@id": "trs",
+        "@id": "http://127.0.0.1/",
         "@type": [
           "trov:TrustedResearchSystem",
           "schema:Organization"
         ],
-        "rdfs:comment": "TRS that can monitor network accesses or provide Internet isolation",
-        "trov:contact": "root@dev.null",
-        "trov:description": "My local system",
+        "rdfs:comment": "TRS that can monitor netowork accesses or provide Internet isolation",
+        "schema:description": "My local system",
+        "schema:email": "root@dev.null",
+        "schema:name": "shakuras",
+        "schema:owner": {
+          "@id": "https://orcid.org/0000-0003-1709-3744",
+          "@type": "schema:Person",
+          "schema:name": "Kacper Kowalik"
+        },
+        "schema:url": "http://127.0.0.1/",
         "trov:hasCapability": [
           {
-            "@id": "trs/capability/1",
+            "@id": "trov:CanRecordInternetAccess",
             "@type": "trov:CanRecordInternetAccess"
           },
           {
-            "@id": "trs/capability/2",
+            "@id": "trov:CanProvideInternetIsolation",
             "@type": "trov:CanProvideInternetIsolation"
           }
-        ],
-        "trov:name": "shakuras",
-        "trov:owner": "Kacper Kowalik",
-        "trov:url": "http://127.0.0.1/"
+        ]
       }
     }
   ]

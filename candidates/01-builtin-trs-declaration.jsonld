@@ -12,14 +12,18 @@
         "trov:TransparentResearchObject",
         "schema:CreativeWork"
       ],
-      "schema:creator": "TRO utils",
-      "schema:dateCreated": "2026-10-03T12:00:00",
+      "schema:creator": {
+        "@id": "https://w3id.org/trace/tro-utils#unidentified-trs",
+        "@type": "schema:Organization",
+        "schema:name": "TRO utils"
+      },
+      "schema:dateCreated": "2026-10-07T12:00:00+00:00",
       "schema:description": "Some description",
       "schema:name": "Some TRO",
       "trov:createdWith": {
         "@type": "schema:SoftwareApplication",
         "schema:name": "tro-utils",
-        "schema:softwareVersion": "0.4.6"
+        "schema:softwareVersion": "0.2.3.dev4+gd511bf49a.d20260326"
       },
       "trov:hasArrangement": [
         {
@@ -41,7 +45,7 @@
               "trov:artifact": {
                 "@id": "composition/1/artifact/1"
               },
-              "trov:path": "download.sh"
+              "trov:path": "data.csv"
             },
             {
               "@id": "arrangement/0/location/2",
@@ -49,7 +53,7 @@
               "trov:artifact": {
                 "@id": "composition/1/artifact/2"
               },
-              "trov:path": "package.sh"
+              "trov:path": "download.sh"
             },
             {
               "@id": "arrangement/0/location/3",
@@ -57,7 +61,7 @@
               "trov:artifact": {
                 "@id": "composition/1/artifact/3"
               },
-              "trov:path": "data.csv"
+              "trov:path": "package.sh"
             }
           ]
         },
@@ -78,15 +82,15 @@
               "@id": "arrangement/1/location/1",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/4"
+                "@id": "composition/1/artifact/1"
               },
-              "trov:path": "results.txt"
+              "trov:path": "data.csv"
             },
             {
               "@id": "arrangement/1/location/2",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/1"
+                "@id": "composition/1/artifact/2"
               },
               "trov:path": "download.sh"
             },
@@ -94,7 +98,7 @@
               "@id": "arrangement/1/location/3",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/2"
+                "@id": "composition/1/artifact/3"
               },
               "trov:path": "package.sh"
             },
@@ -102,9 +106,9 @@
               "@id": "arrangement/1/location/4",
               "@type": "trov:ArtifactLocation",
               "trov:artifact": {
-                "@id": "composition/1/artifact/3"
+                "@id": "composition/1/artifact/4"
               },
-              "trov:path": "data.csv"
+              "trov:path": "results.txt"
             }
           ]
         }
@@ -128,16 +132,16 @@
             "@type": "trov:ResearchArtifact",
             "trov:hash": {
               "trov:hashAlgorithm": "sha256",
-              "trov:hashValue": "fed3c1ea9f9cd6bbe91287c488ccd78c3fa5117b745cff3af8b8b3247f4a16a6"
+              "trov:hashValue": "492d5ea496056f1a6a6592241032fab764c321596317930b4fa0e1e8bc3b7470"
             },
-            "trov:mimeType": "text/plain"
+            "trov:mimeType": "text/csv"
           },
           {
             "@id": "composition/1/artifact/2",
             "@type": "trov:ResearchArtifact",
             "trov:hash": {
               "trov:hashAlgorithm": "sha256",
-              "trov:hashValue": "9ecbbe5552e04010a48a2994b469de18471844b17819a9f4a323352ae392c8e7"
+              "trov:hashValue": "fed3c1ea9f9cd6bbe91287c488ccd78c3fa5117b745cff3af8b8b3247f4a16a6"
             },
             "trov:mimeType": "text/plain"
           },
@@ -146,7 +150,7 @@
             "@type": "trov:ResearchArtifact",
             "trov:hash": {
               "trov:hashAlgorithm": "sha256",
-              "trov:hashValue": "492d5ea496056f1a6a6592241032fab764c321596317930b4fa0e1e8bc3b7470"
+              "trov:hashValue": "9ecbbe5552e04010a48a2994b469de18471844b17819a9f4a323352ae392c8e7"
             },
             "trov:mimeType": "text/plain"
           },
@@ -188,17 +192,17 @@
               "@id": "arrangement/1"
             }
           },
-          "trov:endedAtTime": "2026-10-03T10:00:00",
+          "trov:endedAtTime": "2026-10-03T10:00:00+00:00",
           "trov:hasPerformanceAttribute": [],
-          "trov:startedAtTime": "2026-10-03T09:10:00",
+          "trov:startedAtTime": "2026-10-03T09:10:00+00:00",
           "trov:wasConductedBy": {
-            "@id": "trs"
+            "@id": "https://w3id.org/trace/tro-utils#unidentified-trs"
           }
         }
       ],
       "trov:vocabularyVersion": "0.1",
       "trov:wasAssembledBy": {
-        "@id": "trs",
+        "@id": "https://w3id.org/trace/tro-utils#unidentified-trs",
         "@type": [
           "trov:TrustedResearchSystem",
           "schema:Organization"
