@@ -1,0 +1,53 @@
+# Publish the image to ghcr.io whenever the Dockerfile that describes it reaches the default
+# branch.
+#
+# The image is what make-candidates runs in and what the reports are published from, so the one
+# on ghcr.io has to be the one the Dockerfile on the default branch describes. Published by hand
+# it drifted behind the pin, and every pull-image after that fetched an image that installed a
+# version of tro-utils the repository had already moved past.
+#
+# Tagged with the tro-utils version as well as latest, so that the image a pin was checked
+# against stays fetchable after the pin moves.
+
+name: Publish image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-image
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      # publish-image builds for x86 and ARM, which needs a builder that is not the default one.
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push the image
+        run: make publish-image
+
+      - name: Say what was published
+        run: |
+          version="$(make -s print-tro-utils-version 2>/dev/null)"
+          image="$(make -s print-image 2>/dev/null)"
+          {
+            echo "Published \`${image}\`, which installs tro-utils \`${version}\`,"
+            echo "also tagged \`tro-utils-${version}\`."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,77 @@
+# Remake the candidates and the reports on every push to a branch, and commit what changed back to
+# that branch.
+#
+# This is what makes a version bump a one-line change: push a branch that moves the pin in the
+# Dockerfile and open a pull request, and this run fills in the candidates and the reports that go
+# with it, made in the image that pin describes. Nothing has to be remade by hand, and nothing that
+# was made on a workstation can reach the default branch, because check-candidates rejects it.
+
+name: Regenerate
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# A second push supersedes the first: both would regenerate from the branch, and only the later one
+# describes it.
+concurrency:
+  group: regenerate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      # The whole history, so that review-ledger can resolve the commits it recorded reviews at.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - id: regenerate
+        uses: ./.github/actions/regenerate
+
+      # Added to the index first, so that a candidate or a report that is new rather than changed
+      # counts too.
+      - name: Commit what changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all -- candidates reports
+
+          version='${{ steps.regenerate.outputs.tro-utils-version }}'
+
+          if git diff --cached --quiet; then
+            echo "The candidates and the reports already match the branch; nothing to commit." \
+                >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git commit --message "Remake the candidates and the reports with tro-utils ${version}" \
+                     --message "Made by the Regenerate workflow in the image this branch's Dockerfile describes."
+          git push origin "HEAD:${{ github.ref_name }}"
+
+          {
+            echo "Committed the candidates and the reports made with tro-utils \`${version}\`:"
+            echo
+            echo '```'
+            git show --stat --oneline HEAD
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Show the reports
+        if: always()
+        run: |
+          [ -f reports/integrated-report.md ] || exit 0
+          cat reports/integrated-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Attach the reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports
+          path: reports/

@@ -1,0 +1,118 @@
+# Find out, on a schedule, whether the checks have changed what they say about the pinned
+# tro-utils, and file an issue where they have.
+#
+# The checks are not in this repository and are not pinned. The image imports tro-checks, and with
+# it the versions of the TRACE Specification the checks come from, with repro.require from a branch
+# that moves; trace-main says of itself that it "changes frequently". Nothing is fetched while the
+# reports are made, so the checks a report was written by are the ones that were current when the
+# image was built, and they stay that way until an image is built past that layer. That is why this
+# builds with every layer afresh rather than reusing the cache the other workflows fill: a cached
+# build cannot see a new check, however often it runs.
+#
+# Nothing is committed here. The issue is the notification; moving to the new checks is a pull
+# request like any other, and Regenerate makes the candidates and the reports for it.
+
+name: Watch checks
+
+on:
+  schedule:
+    # Mondays, early. Any hour off the hour, since the scheduler is busiest on it.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: watch-checks
+  cancel-in-progress: false
+
+env:
+  # Who the issue is assigned to, and the label that finds it again so that a change that lasts
+  # weeks is commented on rather than filed afresh every Monday.
+  ISSUE_ASSIGNEE: Xarthisius
+  ISSUE_LABEL: conformance-drift
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      # The whole history, so that review-ledger can resolve the commits it recorded reviews at.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - id: regenerate
+        uses: ./.github/actions/regenerate
+        with:
+          no-cache: true
+
+      # Added to the index first, so that a report that is new rather than changed counts too.
+      - name: Say whether anything differs
+        id: drift
+        run: |
+          git add --intent-to-add --all -- candidates reports
+          if git diff --quiet -- candidates reports; then
+            echo 'differs=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'differs=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Describe what differs
+        if: steps.drift.outputs.differs == 'true'
+        env:
+          VERSION: ${{ steps.regenerate.outputs.tro-utils-version }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: .github/scripts/describe-check-drift "$VERSION" "$RUN_URL" > /tmp/issue-body.md
+
+      # Commented on rather than filed again where one is already open, so that a change nobody has
+      # got to yet does not become an issue a week.
+      - name: File or update the issue
+        if: steps.drift.outputs.differs == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.regenerate.outputs.tro-utils-version }}
+        run: |
+          gh label create "$ISSUE_LABEL" --force --color D93F0B \
+              --description 'The checks say something different about the pinned tro-utils'
+
+          open="$(gh issue list --state open --label "$ISSUE_LABEL" --limit 1 \
+                      --json number --jq '.[0].number // empty')"
+
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --body-file /tmp/issue-body.md
+            echo "Commented on #${open}." >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue create \
+                --title "The checks say something different about tro-utils ${VERSION}" \
+                --body-file /tmp/issue-body.md \
+                --label "$ISSUE_LABEL" \
+                --assignee "$ISSUE_ASSIGNEE"
+            echo 'Filed an issue.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # Closed where the difference is gone, which is what merging the pull request that takes the
+      # new checks does.
+      - name: Close the issue where nothing differs
+        if: steps.drift.outputs.differs == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.regenerate.outputs.tro-utils-version }}
+        run: |
+          open="$(gh issue list --state open --label "$ISSUE_LABEL" --limit 1 \
+                      --json number --jq '.[0].number // empty')"
+
+          echo "The checks reach the committed conclusions about tro-utils \`${VERSION}\`." \
+              >> "$GITHUB_STEP_SUMMARY"
+          [ -n "$open" ] || exit 0
+
+          gh issue close "$open" --comment \
+              "The checks, built afresh, now reach the conclusions this repository has committed for \`tro-utils ${VERSION}\`. Closed by the Watch checks run."
+
+      - name: Attach the reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports
+          path: reports/

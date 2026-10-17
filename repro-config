@@ -2,6 +2,9 @@ REPRO_NAME=tro-utils-checks
 REPRO_DOCKER_ORG=ghcr.io/transparency-certified
 REPRO_IMAGE_TAG=latest
 
+# The version of tro-utils the image installs, read from the one place it is named.
+TRO_UTILS_VERSION=$(shell sed -n 's/^ARG TRO_UTILS_VERSION=//p' Dockerfile)
+
 DOCKER_BUILD_PROGRESS=plain
 
 image:                  build-image   ##
@@ -26,11 +29,21 @@ create-image-builder:
 		docker buildx create --name multiarch --driver docker-container
 
 ## publish-image:     Build the image for x86 and ARM and push it to ghcr.io.
+# Tagged with the tro-utils version as well as latest, so a run can ask for the image that
+# goes with a pin rather than for whichever image was published most recently.
 publish-image: create-image-builder
 	docker buildx build --builder multiarch \
 		--platform linux/amd64,linux/arm64 \
 		--annotation "index:org.opencontainers.image.source=https://github.com/transparency-certified/tro-utils-checks" \
 		--tag ${REPRO_IMAGE} \
+		--tag ${REPRO_DOCKER_ORG}/${REPRO_NAME}:tro-utils-${TRO_UTILS_VERSION} \
 		--push \
 		--progress=${DOCKER_BUILD_PROGRESS} \
 		.
+
+# Printed for the workflows, which name the image and the version in what they build and commit.
+print-image:
+	@echo ${REPRO_IMAGE}
+
+print-tro-utils-version:
+	@echo ${TRO_UTILS_VERSION}
