@@ -1,0 +1,61 @@
+# Build the image from the Dockerfile in this checkout and remake the candidates and the reports
+# in it. Building rather than pulling is the point: the candidates depend on the version of
+# tro-utils the image installs and on the version of libmagic it carries, so the only image that
+# can be trusted to make them is the one this checkout's Dockerfile describes.
+
+name: Regenerate the candidates and reports
+description: Builds this REPRO's image from the checkout and remakes the candidates and the reports in it.
+
+outputs:
+  tro-utils-version:
+    description: The version of tro-utils the image installed.
+    value: ${{ steps.settings.outputs.tro-utils-version }}
+
+runs:
+  using: composite
+  steps:
+    # The image runs as a user that cannot otherwise write to the runner's checkout, including the
+    # directories the Makefile creates for each session.
+    - name: Let the image write into the checkout
+      shell: bash
+      run: |
+        mkdir -p .repro-logs .repro-sessions/active
+        chmod -R a+rwX .
+
+    # Taken from the Makefile and repro-config so that nothing here names them a second time.
+    - name: Read the image name and the pinned version
+      id: settings
+      shell: bash
+      run: |
+        {
+          echo "image=$(make -s print-image 2>/dev/null)"
+          echo "tro-utils-version=$(make -s print-tro-utils-version 2>/dev/null)"
+        } >> "$GITHUB_OUTPUT"
+
+    - uses: docker/setup-buildx-action@v3
+
+    # Layers are cached between runs, so a change that leaves the Dockerfile alone pays only for
+    # the final layers. A moved pin rebuilds from the line that installs tro-utils onwards.
+    - name: Build the image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        load: true
+        pull: true
+        tags: ${{ steps.settings.outputs.image }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    # Git in the image refuses a checkout owned by another user unless told to trust it.
+    - name: Make the candidates and the reports
+      shell: bash
+      run: |
+        make build-candidates build-reports REPRO_INTERACTIVE_SESSION=false \
+            REPRO_DOCKER_OPTIONS="--env GIT_CONFIG_COUNT=1 --env GIT_CONFIG_KEY_0=safe.directory --env 'GIT_CONFIG_VALUE_0=*'"
+
+    # build-reports also rewrites REVIEWS.md, which names the commit it was written at and so
+    # differs on every run. It records who reviewed what, not what the checks found, so it is left
+    # as committed here and updated by hand with make update-reviews.
+    - name: Leave REVIEWS.md as committed
+      shell: bash
+      run: git checkout -- REVIEWS.md
