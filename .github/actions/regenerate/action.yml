@@ -41,12 +41,12 @@ runs:
           echo "tro-utils-version=$(make -s print-tro-utils-version 2>/dev/null)"
         } >> "$GITHUB_OUTPUT"
 
-    - uses: docker/setup-buildx-action@v3
+    - uses: docker/setup-buildx-action@v4
 
     # Layers are cached between runs, so a change that leaves the Dockerfile alone pays only for
     # the final layers. A moved pin rebuilds from the line that installs tro-utils onwards.
     - name: Build the image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
         load: true
