@@ -6,6 +6,15 @@
 name: Regenerate the candidates and reports
 description: Builds this REPRO's image from the checkout and remakes the candidates and the reports in it.
 
+inputs:
+  no-cache:
+    description: >-
+      Build every layer afresh. The image fetches tro-checks, and with it the checks and the
+      versions of the TRACE Specification they come from, at build time from a branch that moves,
+      so a cached layer holds whichever checks were current when it was built. Reaching new checks
+      means building past that layer.
+    default: 'false'
+
 outputs:
   tro-utils-version:
     description: The version of tro-utils the image installed.
@@ -43,8 +52,11 @@ runs:
         load: true
         pull: true
         tags: ${{ steps.settings.outputs.image }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        no-cache: ${{ inputs.no-cache == 'true' }}
+        # An uncached build writes nothing back: it is run to find out what changed, not to settle
+        # what the other workflows build on.
+        cache-from: ${{ inputs.no-cache == 'true' && '' || 'type=gha' }}
+        cache-to: ${{ inputs.no-cache == 'true' && '' || 'type=gha,mode=max' }}
 
     # Git in the image refuses a checkout owned by another user unless told to trust it.
     - name: Make the candidates and the reports

@@ -25,7 +25,7 @@ with it are made by CI, in the image that line describes. See [Updating
 | [`candidates/manifest.json`](candidates/manifest.json) | Describes each candidate and lists the versions and tiers it targets. |
 | [`reports/`](reports) | The reports of what the checks found. |
 | [`Dockerfile`](Dockerfile) | Installs `tro-checks` and a particular release of `tro-utils`. |
-| [`.github/workflows/`](.github/workflows) | Remake the candidates and the reports, check that the committed ones are the ones the image makes, and publish the image. |
+| [`.github/workflows/`](.github/workflows) | Remake the candidates and the reports, check that the committed ones are the ones the image makes, publish the image, and watch for the checks changing. |
 
 ## Running it
 
@@ -73,3 +73,33 @@ and zone in [`make-candidates`](make-candidates) give it. A candidate made again
 `REVIEWS.md` is left alone by CI: it records who reviewed what rather than what the checks found,
 and it names the commit it was written at, so it would differ on every run. Update it with `make
 update-reviews`.
+
+## When the checks change
+
+The checks are not in this repository and are not pinned. The image imports `tro-checks`, and with
+it the versions of the TRACE Specification the checks come from, with `repro.require` from a branch
+that moves; `trace-main` describes itself as changing frequently. Nothing is fetched while the
+reports are made, so a report is written by whichever checks were current when the image was built,
+and stays that way until an image is built past that layer. A cached rebuild will not reach a new
+check, however often it runs.
+
+**Watch checks** runs weekly, and when asked for. It builds the image with every layer afresh,
+remakes the candidates and the reports with the pinned `tro-utils`, and compares them with the
+committed ones. Where they differ it files an issue — or comments on the open one, so a change
+nobody has got to yet does not become an issue a week — and closes it once the difference is gone.
+Every report enumerates every expectation by name, so a check that is added, removed, renamed or
+reworded shows up even where no candidate's status changes.
+
+Nothing is committed by that run. Moving to the new checks is a pull request like any other:
+
+```
+make rebuild-image
+make build-candidates build-reports
+```
+
+Who the issue is assigned to is `ISSUE_ASSIGNEE` in
+[`watch-checks.yml`](.github/workflows/watch-checks.yml).
+
+Because that build is uncached it also picks up anything else that has moved: the image is built
+from `cirss/repro-parent:latest` and installs its other packages unpinned. The issue says so where
+the candidates differ as well, since the checks cannot change those.

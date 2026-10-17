@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+#
+# Describe, as Markdown on stdout, how the candidates and the reports just remade differ from the
+# ones committed. This becomes the body of the issue the Watch checks workflow files.
+#
+# Run from the top-level directory of the repository, after the candidates and the reports have
+# been remade and `git add --intent-to-add` has been run over them, so that a report that is new
+# rather than changed is counted.
+
+set -euo pipefail
+
+version="${1:?usage: describe-check-drift TRO_UTILS_VERSION RUN_URL}"
+run_url="${2:?usage: describe-check-drift TRO_UTILS_VERSION RUN_URL}"
+
+# An issue body holds 65536 characters. The diffs are cut well inside that, since a change to the
+# reports' layout would otherwise run to the whole of them.
+readonly MAX_DIFF_CHARS=20000
+
+# Cut to a whole number of lines, so that a cut diff is still read as a diff.
+clip() {
+	if [ "$(wc -c <<< "$1")" -le "${MAX_DIFF_CHARS}" ]; then
+		printf '%s\n' "$1"
+	else
+		head -c "${MAX_DIFF_CHARS}" <<< "$1" | sed '$d'
+		printf '\n... cut here; the whole of it is in the reports attached to the run.\n'
+	fi
+}
+
+readme_diff="$(git diff -- reports/README.md)"
+candidates_stat="$(git diff --stat -- candidates)"
+
+# reports/README.md carries nothing but each candidate's description, the version it was made with,
+# and the status of each of its targets, so a changed line that does not name the version is a
+# changed status. Reading the statuses out of the table would say more, but that table's markup has
+# been reshaped more than once, and a parser that quietly stopped matching would leave this silent.
+if git diff -U0 -- reports/README.md | grep -E '^[-+][^-+]' | grep -qv 'Created with'; then
+	lede="**The checks no longer reach the same conclusions about \`tro-utils ${version}\`.**"
+else
+	lede="The conclusions are the same, but what the reports say on the way to them has changed, \
+so a check has been added, removed, renamed, or reworded."
+fi
+
+# Said only where the candidates match, since they are what shows that nothing but the checks moved.
+if [ -n "${candidates_stat}" ]; then
+	provenance="Something the image is made of has moved as well; see below."
+else
+	provenance="The candidates are unchanged, so the checks are what moved: \`tro-checks\` and the \
+versions of the TRACE Specification it carries are fetched from branches that move whenever the \
+image is built, and this is what those branches now say."
+fi
+
+cat <<MARKDOWN
+${lede}
+
+The candidates and the reports were remade from this repository as it stands, with the pinned
+\`tro-utils ${version}\`, in an image built from the \`Dockerfile\` with every layer afresh.
+${provenance}
+
+## What differs
+
+\`\`\`
+$(git diff --stat -- candidates reports)
+\`\`\`
+MARKDOWN
+
+if [ -n "${candidates_stat}" ]; then
+	cat <<'MARKDOWN'
+
+> [!WARNING]
+> The candidates differ too, which the checks cannot cause. The image is built from
+> `cirss/repro-parent:latest` and installs its other packages unpinned, so something it is made of
+> has moved as well — `libmagic`, which names the artifacts' types, is the usual one. Read the
+> candidates' diff before reading anything into the reports'.
+MARKDOWN
+fi
+
+if [ -n "${readme_diff}" ]; then
+	printf '\n## The summary of what the checks found\n\n```diff\n'
+	clip "${readme_diff}"
+	printf '```\n'
+fi
+
+cat <<MARKDOWN
+
+## What to do
+
+Nothing here is committed. To take these checks as they now stand, rebuild the image and remake
+everything, which is what [the run](${run_url}) did:
+
+\`\`\`
+make rebuild-image
+make build-candidates build-reports
+\`\`\`
+
+Then open a pull request with the result; **Regenerate** will confirm it reaches the same files.
+Each report in full is attached to [the run](${run_url}) as \`reports\`.
+MARKDOWN
