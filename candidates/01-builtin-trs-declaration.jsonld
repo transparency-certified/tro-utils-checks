@@ -23,7 +23,7 @@
       "trov:createdWith": {
         "@type": "schema:SoftwareApplication",
         "schema:name": "tro-utils",
-        "schema:softwareVersion": "0.5.1"
+        "schema:softwareVersion": "0.5.2"
       },
       "trov:hasArrangement": [
         {
