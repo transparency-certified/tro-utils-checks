@@ -8,8 +8,11 @@ LABEL org.opencontainers.image.source=https://github.com/transparency-certified/
 RUN apt-get update && \
 	apt-get install -y python3 python3-pip libmagic1 gnupg faketime xz-utils
 
-# Install a pinned version of tro-utils so candidates change when the pin is moved.
-RUN pip3 install tro-utils==0.5.1
+# Install a pinned version of tro-utils so candidates change when the pin is moved. This line is
+# the one place the version is named: the workflows read it from here, and moving it is the whole
+# of a version bump, since CI remakes the candidates and the reports from it.
+ARG TRO_UTILS_VERSION=0.5.1
+RUN pip3 install tro-utils==${TRO_UTILS_VERSION}
 
 # Install Node for running tro-checks.
 ENV NODE_VERSION=22.11.0
