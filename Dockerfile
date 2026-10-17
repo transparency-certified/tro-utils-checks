@@ -11,7 +11,7 @@ RUN apt-get update && \
 # Install a pinned version of tro-utils so candidates change when the pin is moved. This line is
 # the one place the version is named: the workflows read it from here, and moving it is the whole
 # of a version bump, since CI remakes the candidates and the reports from it.
-ARG TRO_UTILS_VERSION=0.5.1
+ARG TRO_UTILS_VERSION=0.5.2
 RUN pip3 install tro-utils==${TRO_UTILS_VERSION}
 
 # Install Node for running tro-checks.

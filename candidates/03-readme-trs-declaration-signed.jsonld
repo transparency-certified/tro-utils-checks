@@ -23,7 +23,7 @@
       "trov:createdWith": {
         "@type": "schema:SoftwareApplication",
         "schema:name": "tro-utils",
-        "schema:softwareVersion": "0.5.1"
+        "schema:softwareVersion": "0.5.2"
       },
       "trov:hasArrangement": [
         {
@@ -256,7 +256,7 @@
               "trov:hashAlgorithm": "sha256",
               "trov:hashValue": "d1efd9988e41c2df5e59906374504fca202958750ef711797ad11facdb0156ec"
             },
-            "trov:mimeType": "text/plain"
+            "trov:mimeType": "application/zip"
           }
         ],
         "trov:hasFingerprint": {
