@@ -23,7 +23,7 @@
       "trov:createdWith": {
         "@type": "schema:SoftwareApplication",
         "schema:name": "tro-utils",
-        "schema:softwareVersion": "0.2.3.dev4+gd511bf49a.d20260326"
+        "schema:softwareVersion": "0.5.1"
       },
       "trov:hasArrangement": [
         {
@@ -238,7 +238,7 @@
               "trov:hashAlgorithm": "sha256",
               "trov:hashValue": "492d5ea496056f1a6a6592241032fab764c321596317930b4fa0e1e8bc3b7470"
             },
-            "trov:mimeType": "text/csv"
+            "trov:mimeType": "text/plain"
           },
           {
             "@id": "composition/1/artifact/4",
@@ -256,7 +256,7 @@
               "trov:hashAlgorithm": "sha256",
               "trov:hashValue": "d1efd9988e41c2df5e59906374504fca202958750ef711797ad11facdb0156ec"
             },
-            "trov:mimeType": "application/x-decompression-error-gzip-Stdin-has-more-than-one-entry--rest-ignored"
+            "trov:mimeType": "text/plain"
           }
         ],
         "trov:hasFingerprint": {
