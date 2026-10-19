@@ -4,3 +4,9 @@ dist
 !.gitignore
 !.review-ledger/
 !.github/
+
+# tro-checks' build-reports (and build-candidates) stamp the hash of what they were made from, for
+# tro-checks' own Regenerate workflows to decide whether to run. This repository has its own
+# workflows and never reads it, and it is not something the checks say, so it is not committed.
+/reports/last-generated.json
+/candidates/last-generated.json
