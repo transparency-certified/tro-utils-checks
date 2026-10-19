@@ -9,16 +9,23 @@ description: Builds this REPRO's image from the checkout and remakes the candida
 inputs:
   no-cache:
     description: >-
-      Build every layer afresh. The image fetches tro-checks, and with it the checks and the
-      versions of the TRACE Specification they come from, at build time from a branch that moves,
-      so a cached layer holds whichever checks were current when it was built. Reaching new checks
-      means building past that layer.
+      Build every layer afresh. The image is built from cirss/repro-parent:latest and installs its
+      other packages unpinned, so a cached layer holds whichever of them were current when it was
+      built.
     default: 'false'
+  tro-checks-version:
+    description: >-
+      The commit of tro-checks to import in place of the one the Dockerfile pins, to find out what
+      moving the pin would change.
+    default: ''
 
 outputs:
   tro-utils-version:
     description: The version of tro-utils the image installed.
     value: ${{ steps.settings.outputs.tro-utils-version }}
+  tro-checks-version:
+    description: The commit of tro-checks the image imported.
+    value: ${{ steps.settings.outputs.tro-checks-version }}
 
 runs:
   using: composite
@@ -32,13 +39,16 @@ runs:
         chmod -R a+rwX .
 
     # Taken from the Makefile and repro-config so that nothing here names them a second time.
-    - name: Read the image name and the pinned version
+    - name: Read the image name and the pinned versions
       id: settings
       shell: bash
+      env:
+        TRO_CHECKS_OVERRIDE: ${{ inputs.tro-checks-version }}
       run: |
         {
           echo "image=$(make -s print-image 2>/dev/null)"
           echo "tro-utils-version=$(make -s print-tro-utils-version 2>/dev/null)"
+          echo "tro-checks-version=${TRO_CHECKS_OVERRIDE:-$(make -s print-tro-checks-version 2>/dev/null)}"
         } >> "$GITHUB_OUTPUT"
 
     - uses: docker/setup-buildx-action@v4
@@ -52,6 +62,7 @@ runs:
         load: true
         pull: true
         tags: ${{ steps.settings.outputs.image }}
+        build-args: TRO_CHECKS_VERSION=${{ steps.settings.outputs.tro-checks-version }}
         no-cache: ${{ inputs.no-cache == 'true' }}
         # An uncached build writes nothing back: it is run to find out what changed, not to settle
         # what the other workflows build on.

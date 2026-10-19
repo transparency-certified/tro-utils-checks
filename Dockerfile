@@ -33,7 +33,13 @@ USER repro
 
 # Import the repro modules tro-checks and review-ledger.
 ENV TRACE='https://raw.githubusercontent.com/transparency-certified/${1}/${2}/exports'
-RUN repro.require tro-checks main ${TRACE} --report
+
+# Import tro-checks at a pinned commit so the reports change only when the pin is moved. The checks,
+# and the versions of the TRACE Specification they come from, are all in tro-checks' own tree, so
+# this commit is the whole of what the checks say. Like the tro-utils pin, this line is the one place
+# it is named: Watch checks reads it from here and says when main has moved past it with a difference.
+ARG TRO_CHECKS_VERSION=13750ed5e76dbe66a93af2a4d9cd9a84adafd86f
+RUN repro.require tro-checks ${TRO_CHECKS_VERSION} ${TRACE} --report
 RUN repro.require review-ledger main ${CIRSS} --report
 
 CMD ["/bin/bash", "-il"]

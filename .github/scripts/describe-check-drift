@@ -9,8 +9,13 @@
 
 set -euo pipefail
 
-version="${1:?usage: describe-check-drift TRO_UTILS_VERSION RUN_URL}"
-run_url="${2:?usage: describe-check-drift TRO_UTILS_VERSION RUN_URL}"
+usage='usage: describe-check-drift TRO_UTILS_VERSION PINNED_TRO_CHECKS MAIN_TRO_CHECKS RUN_URL'
+version="${1:?${usage}}"
+pinned="${2:?${usage}}"
+main="${3:?${usage}}"
+run_url="${4:?${usage}}"
+
+readonly TRO_CHECKS_URL=https://github.com/transparency-certified/tro-checks
 
 # An issue body holds 65536 characters. The diffs are cut well inside that, since a change to the
 # reports' layout would otherwise run to the whole of them.
@@ -35,26 +40,39 @@ candidates_stat="$(git diff --stat -- candidates)"
 # been reshaped more than once, and a parser that quietly stopped matching would leave this silent.
 if git diff -U0 -- reports/README.md | grep -E '^[-+][^-+]' | grep -qv 'Created with'; then
 	lede="**The checks no longer reach the same conclusions about \`tro-utils ${version}\`.**"
+elif [ "${pinned}" = "${main}" ]; then
+	lede="The conclusions are the same, but what the reports say on the way to them has changed."
 else
 	lede="The conclusions are the same, but what the reports say on the way to them has changed, \
 so a check has been added, removed, renamed, or reworded."
 fi
 
-# Said only where the candidates match, since they are what shows that nothing but the checks moved.
-if [ -n "${candidates_stat}" ]; then
+# Where main is still at the pin, the checks have not moved, so whatever differs is the image.
+if [ "${pinned}" = "${main}" ]; then
+	checks="\`tro-checks\` is still at the pinned commit [\`${pinned:0:8}\`](${TRO_CHECKS_URL}/commit/${pinned}), \
+so the checks have not moved."
+else
+	checks="\`tro-checks\` is pinned at [\`${pinned:0:8}\`](${TRO_CHECKS_URL}/commit/${pinned}), and its \
+\`main\` is now at [\`${main:0:8}\`](${TRO_CHECKS_URL}/commit/${main}) \
+([what changed](${TRO_CHECKS_URL}/compare/${pinned}...${main}))."
+fi
+
+# Said only where the candidates match and main has moved, since together they are what shows that
+# nothing but the checks moved.
+if [ "${pinned}" = "${main}" ]; then
+	provenance="Something else the image is made of has moved instead."
+elif [ -n "${candidates_stat}" ]; then
 	provenance="Something the image is made of has moved as well; see below."
 else
-	provenance="The candidates are unchanged, so the checks are what moved: \`tro-checks\` and the \
-versions of the TRACE Specification it carries are fetched from branches that move whenever the \
-image is built, and this is what those branches now say."
+	provenance="The candidates are unchanged, so the checks are what moved."
 fi
 
 cat <<MARKDOWN
 ${lede}
 
 The candidates and the reports were remade from this repository as it stands, with the pinned
-\`tro-utils ${version}\`, in an image built from the \`Dockerfile\` with every layer afresh.
-${provenance}
+\`tro-utils ${version}\` and with \`tro-checks\` at the latest commit on its \`main\`, in an image
+built from the \`Dockerfile\` with every layer afresh. ${checks} ${provenance}
 
 ## What differs
 
@@ -80,18 +98,29 @@ if [ -n "${readme_diff}" ]; then
 	printf '```\n'
 fi
 
+if [ "${pinned}" = "${main}" ]; then
+	cat <<MARKDOWN
+
+## What to do
+
+Nothing here is committed. The checks have not moved, so moving the pin will not help: find what in
+the image has, starting from whatever differs above. Each report in full is attached to
+[the run](${run_url}) as \`reports\`.
+MARKDOWN
+	exit 0
+fi
+
 cat <<MARKDOWN
 
 ## What to do
 
-Nothing here is committed. To take these checks as they now stand, rebuild the image and remake
-everything, which is what [the run](${run_url}) did:
+Nothing here is committed. To take these checks, move the pin in the \`Dockerfile\` to the commit
+[the run](${run_url}) was made with, and open a pull request with just that change:
 
 \`\`\`
-make rebuild-image
-make build-candidates build-reports
+ARG TRO_CHECKS_VERSION=${main}
 \`\`\`
 
-Then open a pull request with the result; **Regenerate** will confirm it reaches the same files.
+**Regenerate** remakes the candidates and the reports on the push and commits them to the branch.
 Each report in full is attached to [the run](${run_url}) as \`reports\`.
 MARKDOWN
