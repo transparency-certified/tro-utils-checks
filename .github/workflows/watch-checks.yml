@@ -1,16 +1,17 @@
-# Find out, on a schedule, whether the checks have changed what they say about the pinned
-# tro-utils, and file an issue where they have.
+# Find out, on a schedule, whether the checks on tro-checks' main branch say something different
+# about the pinned tro-utils than the checks at the commit the Dockerfile pins, and file an issue
+# where they do.
 #
-# The checks are not in this repository and are not pinned. The image imports tro-checks, and with
-# it the versions of the TRACE Specification the checks come from, with repro.require from a branch
-# that moves; trace-main says of itself that it "changes frequently". Nothing is fetched while the
-# reports are made, so the checks a report was written by are the ones that were current when the
-# image was built, and they stay that way until an image is built past that layer. That is why this
-# builds with every layer afresh rather than reusing the cache the other workflows fill: a cached
-# build cannot see a new check, however often it runs.
+# The image imports tro-checks, and with it the versions of the TRACE Specification the checks come
+# from, at the commit TRO_CHECKS_VERSION in the Dockerfile names, so the other workflows see new
+# checks only when that pin is moved. tro-checks' main moves often, and trace-main says of itself
+# that it "changes frequently". This builds the image with main's latest commit in place of the pin
+# and compares what it makes with what is committed. It builds every layer afresh rather than
+# reusing the cache the other workflows fill, so that it also notices the unpinned parts of the
+# image moving; the issue says so where the candidates differ, since the checks cannot change those.
 #
 # Nothing is committed here. The issue is the notification; moving to the new checks is a pull
-# request like any other, and Regenerate makes the candidates and the reports for it.
+# request that moves the pin, and Regenerate makes the candidates and the reports for it.
 
 name: Watch checks
 
@@ -43,10 +44,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Find tro-checks' latest commit
+        id: tro-checks
+        run: |
+          sha="$(git ls-remote https://github.com/transparency-certified/tro-checks.git refs/heads/main | cut -f1)"
+          [ -n "$sha" ] || { echo "Could not resolve tro-checks' main." >&2; exit 1; }
+          echo "main=${sha}" >> "$GITHUB_OUTPUT"
+          echo "pinned=$(make -s print-tro-checks-version 2>/dev/null)" >> "$GITHUB_OUTPUT"
+
       - id: regenerate
         uses: ./.github/actions/regenerate
         with:
           no-cache: true
+          tro-checks-version: ${{ steps.tro-checks.outputs.main }}
 
       # Added to the index first, so that a report that is new rather than changed counts too.
       - name: Say whether anything differs
@@ -63,8 +73,10 @@ jobs:
         if: steps.drift.outputs.differs == 'true'
         env:
           VERSION: ${{ steps.regenerate.outputs.tro-utils-version }}
+          PINNED: ${{ steps.tro-checks.outputs.pinned }}
+          MAIN: ${{ steps.tro-checks.outputs.main }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: .github/scripts/describe-check-drift "$VERSION" "$RUN_URL" > /tmp/issue-body.md
+        run: .github/scripts/describe-check-drift "$VERSION" "$PINNED" "$MAIN" "$RUN_URL" > /tmp/issue-body.md
 
       # Commented on rather than filed again where one is already open, so that a change nobody has
       # got to yet does not become an issue a week.
@@ -92,23 +104,25 @@ jobs:
             echo 'Filed an issue.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      # Closed where the difference is gone, which is what merging the pull request that takes the
-      # new checks does.
+      # Closed where the difference is gone, which is what merging the pull request that moves the
+      # pin does. Where main has moved on without changing anything, the pin is left where it is:
+      # there is nothing for a pull request to commit but the pin itself.
       - name: Close the issue where nothing differs
         if: steps.drift.outputs.differs == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.regenerate.outputs.tro-utils-version }}
+          MAIN: ${{ steps.tro-checks.outputs.main }}
         run: |
           open="$(gh issue list --state open --label "$ISSUE_LABEL" --limit 1 \
                       --json number --jq '.[0].number // empty')"
 
-          echo "The checks reach the committed conclusions about tro-utils \`${VERSION}\`." \
+          echo "The checks at tro-checks \`${MAIN}\` reach the committed conclusions about tro-utils \`${VERSION}\`." \
               >> "$GITHUB_STEP_SUMMARY"
           [ -n "$open" ] || exit 0
 
           gh issue close "$open" --comment \
-              "The checks, built afresh, now reach the conclusions this repository has committed for \`tro-utils ${VERSION}\`. Closed by the Watch checks run."
+              "The checks at tro-checks \`${MAIN}\`, built afresh, reach the conclusions this repository has committed for \`tro-utils ${VERSION}\`. Closed by the Watch checks run."
 
       - name: Attach the reports
         if: always()

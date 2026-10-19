@@ -5,6 +5,9 @@ REPRO_IMAGE_TAG=latest
 # The version of tro-utils the image installs, read from the one place it is named.
 TRO_UTILS_VERSION=$(shell sed -n 's/^ARG TRO_UTILS_VERSION=//p' Dockerfile)
 
+# The commit of tro-checks the image imports, read likewise.
+TRO_CHECKS_VERSION=$(shell sed -n 's/^ARG TRO_CHECKS_VERSION=//p' Dockerfile)
+
 DOCKER_BUILD_PROGRESS=plain
 
 image:                  build-image   ##
@@ -47,3 +50,6 @@ print-image:
 
 print-tro-utils-version:
 	@echo ${TRO_UTILS_VERSION}
+
+print-tro-checks-version:
+	@echo ${TRO_CHECKS_VERSION}
